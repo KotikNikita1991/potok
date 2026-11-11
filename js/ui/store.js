@@ -172,6 +172,7 @@ class Store {
       draft.plan = doc.plan;
       draft.settings = doc.settings;
       draft.days = doc.days;
+      if (doc.table) draft.table = doc.table;
       draft.meta = doc.meta ?? { sample: false };
     });
   }

@@ -10,6 +10,7 @@ import { h, icon, isTouch, safeLink } from './dom.js';
 import { finishTask, openFinishedAtMenu } from './actions.js';
 import { toast } from './overlays.js';
 import { closeSheet, openSheet } from './sheet.js';
+import { knownStatuses } from './table-sheet.js';
 
 const DRAFT_ID = '__draft__';
 const DEFAULT_DUR = 120;
@@ -45,6 +46,7 @@ export function openTaskSheet(ctx, { id = null, placement = null } = {}) {
     link: existing?.link ?? '',
     dur: existing?.dur ?? DEFAULT_DUR,
     color: existing?.color ?? nextColor(baseDoc),
+    label: existing?.label ?? '',
     lag: existing?.lag ?? 0,
     deadlineDate: existing?.deadline ? toKey(existing.deadline) : '',
     deadlineTime: existing?.deadline ? formatHM(minutesOfDay(existing.deadline)) : '',
@@ -106,6 +108,7 @@ export function openTaskSheet(ctx, { id = null, placement = null } = {}) {
     title: form.title.trim() || 'Новая задача',
     note: form.note.trim(),
     link: form.link.trim(),
+    label: form.label.trim(),
     dur: form.dur,
     color: form.color,
     deadline: deadlineValue(form.deadlineDate, form.deadlineTime, draftDoc),
@@ -188,6 +191,23 @@ export function openTaskSheet(ctx, { id = null, placement = null } = {}) {
       syncLink();
     },
   });
+
+  // Статус словами таблицы: нужен, когда задача ждёт кого-то другого. Показываем, если таблица подключена.
+  const labelInput = h('input', {
+    id: 'task-label',
+    class: 'input',
+    type: 'text',
+    list: 'task-label-options',
+    placeholder: 'Статус, если задача кого-то ждёт: на переводе, нужна инфа',
+    'aria-label': 'Статус в таблице',
+    value: form.label,
+    oninput: () => {
+      form.label = labelInput.value;
+    },
+  });
+  const labelField = baseDoc.table?.url || form.label
+    ? [labelInput, h('datalist', { id: 'task-label-options' }, knownStatuses().map((word) => h('option', { value: word })))]
+    : null;
 
   const syncLink = () => {
     const href = safeLink(form.link);
@@ -449,7 +469,7 @@ export function openTaskSheet(ctx, { id = null, placement = null } = {}) {
     statusBlock(),
     h('div', { class: 'sheet-grid' },
       h('div', { class: 'sheet-col' },
-        h('div', { class: 'field' }, titleInput, noteInput, h('div', { class: 'link-row' }, linkInput, openLink)),
+        h('div', { class: 'field' }, titleInput, noteInput, h('div', { class: 'link-row' }, linkInput, openLink), labelField),
         durField),
       h('div', { class: 'sheet-col' },
         placeField,

@@ -21,6 +21,7 @@ export function createDoc() {
     plan: { order: [], anchor: null, u: 0 },
     settings: { week: defaultWeek(), holidays: true, u: 0 },
     days: {},
+    table: { url: '', u: 0 }, // адрес скрипта Google Таблицы, см. core/table.js
     meta: { sample: false },
   };
 }
@@ -38,6 +39,8 @@ export function createTask(fields, now) {
     deadline: null,
     status: 'backlog', // 'queue' — на графике, 'backlog' — без даты, 'done' — готово
     pinAt: null, // начало, если задача закреплена на точное время
+    label: '', // статус словами таблицы, если задача ждёт кого-то: «на переводе», «нужна инфа»
+    sheet: null, // строка в Google Таблице: { tab, text, status } на момент последнего обмена
     history: [], // отрезки, которые уже прошли
     createdAt: now,
     doneAt: null,
@@ -62,6 +65,7 @@ export function nextColor(doc) {
 // Приводит порядок в соответствие со статусами задач.
 export function normalize(doc) {
   const { tasks, plan } = doc;
+  if (!doc.table) doc.table = { url: '', u: 0 };
   const seen = new Set();
   const order = plan.order.filter((id) => {
     const task = tasks[id];
@@ -95,6 +99,7 @@ export function stamp(prev, next, at) {
   }
   if (!same(prev.plan, next.plan)) next.plan.u = at;
   if (!same(prev.settings, next.settings)) next.settings.u = at;
+  if (next.table && !same(prev.table, next.table)) next.table.u = at;
   return next;
 }
 
@@ -118,6 +123,8 @@ export function merge(local, remote, at = Date.now()) {
   }
   out.plan = clone(newest(local.plan, remote.plan));
   out.settings = clone(newest(local.settings, remote.settings));
+  const table = newest(local.table, remote.table);
+  if (table) out.table = clone(table);
   out.meta = { sample: Boolean(local.meta?.sample && remote.meta?.sample) };
   return normalize(out);
 }

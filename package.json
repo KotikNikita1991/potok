@@ -1,12 +1,13 @@
 {
   "name": "potok",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "Поток — планировщик работы: одна линия задач с автоматическим сдвигом",
   "scripts": {
     "test": "node --test",
     "serve": "node scripts/serve.mjs",
+    "mock-table": "node scripts/mock-table.mjs",
     "stamp": "node scripts/stamp-sw.mjs",
     "icons": "node scripts/make-icons.mjs"
   }

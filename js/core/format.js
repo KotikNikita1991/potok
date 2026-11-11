@@ -71,6 +71,19 @@ export function fmtDayTitle(key) {
   return `${DAYS_FULL[date.getDay()]}, ${d} ${MONTHS[m - 1]}`;
 }
 
+// Ссылка из поля задачи: дописывает https:// и пропускает только обычные веб-адреса.
+export function safeLink(raw) {
+  const value = String(raw ?? '').trim();
+  if (!value) return null;
+  const withScheme = /^[a-z][a-z0-9+.-]*:/i.test(value) ? value : `https://${value}`;
+  try {
+    const url = new URL(withScheme);
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export function plural(n, one, few, many) {
   const a = Math.abs(n) % 100;
   const b = a % 10;

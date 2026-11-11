@@ -59,6 +59,8 @@ const ICONS = {
   inbox: 'M4 13l2.5-8h11L20 13M4 13v6h16v-6M4 13h5l1.5 2.5h3L15 13h5',
   warn: 'M12 4l9 16H3zM12 10v4M12 17h.01',
   play: 'M8 5l11 7-11 7z',
+  table: 'M4 5h16v14H4zM4 10h16M4 15h16M10 5v14',
+  copy: 'M9 9h10v11H9zM15 9V5H5v11h4',
 };
 
 export function icon(name, size = 18) {
@@ -79,17 +81,7 @@ export function icon(name, size = 18) {
   return svg;
 }
 
-export function safeLink(raw) {
-  const value = String(raw ?? '').trim();
-  if (!value) return null;
-  const withScheme = /^[a-z][a-z0-9+.-]*:/i.test(value) ? value : `https://${value}`;
-  try {
-    const url = new URL(withScheme);
-    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null;
-  } catch {
-    return null;
-  }
-}
+export { safeLink } from '../core/format.js';
 
 export const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const isTouch = () => window.matchMedia('(pointer: coarse)').matches;

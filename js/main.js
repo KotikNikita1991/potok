@@ -3,9 +3,11 @@
 import { Board } from './ui/board.js';
 import { h, icon } from './ui/dom.js';
 import { GistSync } from './sync/gist.js';
+import { TableClient } from './sync/table.js';
 import { NowBar } from './ui/nowbar.js';
 import { openDaySheet } from './ui/day-sheet.js';
 import { initTheme, openSettingsSheet } from './ui/settings-sheet.js';
+import { openTableSheet } from './ui/table-sheet.js';
 import { openTaskSheet } from './ui/task-sheet.js';
 import { closeSheet, isSheetOpen, positionSheet, watchKeyboard } from './ui/sheet.js';
 import { store } from './ui/store.js';
@@ -20,6 +22,7 @@ const ctx = {
   timeline: null,
   board: null,
   sync: null,
+  table: null,
   taskSheet: null,
   settingsRefresh: null,
   closeSheet,
@@ -39,6 +42,13 @@ const ctx = {
     openDaySheet(ctx, key);
   },
   openSettings: (focus) => openSettingsSheet(ctx, focus),
+  openTable: () => {
+    if (ctx.taskSheet?.isDirty()) {
+      toast('Сначала сохраните или отмените изменения в открытой задаче');
+      return;
+    }
+    openTableSheet(ctx);
+  },
 };
 
 // ---------- Экран ----------
@@ -61,6 +71,13 @@ const top = h(
   nowHost,
   h('div', { class: 'top-actions' },
     syncButton,
+    h('button', {
+      class: 'icon-btn',
+      type: 'button',
+      title: 'Google Таблица',
+      'aria-label': 'Google Таблица',
+      onclick: () => ctx.openTable(),
+    }, icon('table')),
     h('button', {
       class: 'icon-btn',
       type: 'button',
@@ -110,6 +127,12 @@ ctx.sync = new GistSync({
     renderSyncButton();
     ctx.settingsRefresh?.();
   },
+});
+
+ctx.table = new TableClient({
+  fetchImpl: (...args) => fetch(...args),
+  getUrl: () => store.doc.table?.url ?? '',
+  isOnline: () => navigator.onLine !== false,
 });
 
 ctx.board = new Board(boardHost, ctx);

@@ -6,7 +6,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const ENTRIES = ['index.html', 'manifest.webmanifest', 'css', 'js', 'assets'];
+const ENTRIES = ['index.html', 'manifest.webmanifest', 'css', 'js', 'assets', 'apps-script'];
 
 function walk(path) {
   if (statSync(path).isFile()) return [path];

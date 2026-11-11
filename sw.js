@@ -1,9 +1,10 @@
 // Работа без сети: все файлы приложения кладутся в кэш целиком, версия меняется при публикации.
 // Версию и список файлов обновляет scripts/stamp-sw.mjs.
 
-const VERSION = '5b656ee322e8';
+const VERSION = 'cfc77961accb';
 const FILES = [
   './',
+  './apps-script/potok.gs',
   './assets/fonts/onest-cyrillic.woff2',
   './assets/fonts/onest-latin.woff2',
   './assets/icons/favicon.svg',
@@ -20,10 +21,12 @@ const FILES = [
   './js/core/ops.js',
   './js/core/plan.js',
   './js/core/sample.js',
+  './js/core/table.js',
   './js/core/time.js',
   './js/core/whatif.js',
   './js/main.js',
   './js/sync/gist.js',
+  './js/sync/table.js',
   './js/ui/actions.js',
   './js/ui/board.js',
   './js/ui/day-sheet.js',
@@ -33,6 +36,7 @@ const FILES = [
   './js/ui/settings-sheet.js',
   './js/ui/sheet.js',
   './js/ui/store.js',
+  './js/ui/table-sheet.js',
   './js/ui/task-sheet.js',
   './js/ui/timeline.js',
   './manifest.webmanifest',

@@ -206,7 +206,7 @@ export class Board {
         h('i', { class: 'dot' }),
         h('span', { class: 'row-text' },
           h('span', { class: 'row-title' }, task.title || 'Без названия', task.link ? icon('link', 13) : null),
-          h('span', { class: 'row-sub' }, sub.join(' · ')),
+          h('span', { class: 'row-sub' }, sub.join(' · '), this.tag(task)),
           item.late > 0
             ? h('span', { class: 'row-warn' }, icon('warn', 13), `Позже дедлайна на ${fmtDur(item.late)}`)
             : task.deadline ? h('span', { class: 'row-deadline' }, icon('flag', 12), `до ${fmtMoment(task.deadline, now)}`) : null),
@@ -227,7 +227,7 @@ export class Board {
         h('i', { class: 'dot' }),
         h('span', { class: 'row-text' },
           h('span', { class: 'row-title' }, task.title || 'Без названия', task.link ? icon('link', 13) : null),
-          h('span', { class: 'row-sub' }, fmtDur(task.dur))),
+          h('span', { class: 'row-sub' }, fmtDur(task.dur), this.tag(task))),
       ),
       h('button', {
         class: 'btn btn-small row-put',
@@ -252,6 +252,11 @@ export class Board {
           h('span', { class: 'row-sub' }, task.doneAt ? fmtMoment(task.doneAt, now) : '')),
       ),
     );
+  }
+
+  // Статус из таблицы: почему задача ждёт.
+  tag(task) {
+    return task.label ? h('span', { class: 'tag' }, task.label) : null;
   }
 
   openRow(id) {

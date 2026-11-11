@@ -139,7 +139,7 @@ export function completeTask(doc, id, now, at = now) {
     doc.plan.anchor = finished;
   }
   doc.plan.order = others(doc, id);
-  Object.assign(task, { status: 'done', doneAt: finished, pinAt: null, lag: 0 });
+  Object.assign(task, { status: 'done', doneAt: finished, pinAt: null, lag: 0, label: '' });
 }
 
 export function deleteTask(doc, id, now) {
